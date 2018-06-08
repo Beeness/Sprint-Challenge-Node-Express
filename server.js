@@ -99,6 +99,20 @@ server.get('/api/projects/:id', (req, res) => {
         });
 });
 
+//-----PROJECT - DELETE------
+server.delete('/api/actions/:id', (req, res) => {
+    const { id } = req.params;
+    actions
+        .remove(id)
+        .then(action => {
+            res.json( action );
+        })
+        .catch(error => {
+            res.json({ error });
+        });
+    // res.json('testing get');
+});
+
 //---ACTION - CREATE-----
 server.post('/api/projects', (req, res) => {
     
