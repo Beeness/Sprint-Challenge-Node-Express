@@ -113,6 +113,35 @@ server.post('/api/projects', (req, res) => {
     // res.json('testing get');
 });
 
+// //---ACTION - UPDATE------
+// server.put('/api/projects/:id', (req, res) => {
+//     const {id} = req.params;
+//     const { name, description, completed} = req.body;
+//     projects
+//     .update(id, {name, description, completed})
+//     .then(projects => {
+//         res.json( projects );
+//     })
+//     .catch(error => {
+//         res.json({ error });
+//     });
+//     console.log(req.body);
+// // res.json('testing get');
+// });
+
+//-----ACTION - DELETE------
+server.delete('/api/projects/:id', (req, res) => {
+    const { id } = req.params;
+    projects
+        .remove(id)
+        .then(project => {
+            res.json( project );
+        })
+        .catch(error => {
+            res.json({ error });
+        });
+    // res.json('testing get');
+});
 
 
 server.listen( port, () =>
