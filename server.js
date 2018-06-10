@@ -1,13 +1,20 @@
 const express = require('express');
 const cors = require('cors');
-const port = 8000
-
-const server = express();
-server.use(cors());
-server.use(express.json());
-
 const projects = require('./data/helpers/projectModel');
 const actions = require('./data/helpers/actionModel');
+const port = 8000
+const server = express();
+server.use(express.json());
+server.use(cors());
+
+
+
+
+const sendUserError = (status, message, res) => {
+    // This is just a helper method that we'll use for sending errors when things go wrong.
+    res.status(status).json({ errorMessage: message });
+    return;
+  };
 
 server.get('/', (req, res) => {
     res.send(`Your sprint challenge server on port ${port} is up and running!!`);
@@ -113,7 +120,7 @@ server.delete('/api/actions/:id', (req, res) => {
     // res.json('testing get');
 });
 
-//---ACTION - CREATE-----
+//---PROJECT - CREATE-----
 server.post('/api/projects', (req, res) => {
     
     projects
@@ -127,34 +134,37 @@ server.post('/api/projects', (req, res) => {
     // res.json('testing get');
 });
 
-// //---ACTION - UPDATE------
-// server.put('/api/projects/:id', (req, res) => {
-//     const {id} = req.params;
-//     const { name, description, completed} = req.body;
-//     projects
-//     .update(id, {name, description, completed})
-//     .then(projects => {
-//         res.json( projects );
-//     })
-//     .catch(error => {
-//         res.json({ error });
-//     });
-//     console.log(req.body);
-// // res.json('testing get');
-// });
-
-//-----ACTION - DELETE------
-server.delete('/api/projects/:id', (req, res) => {
+// //---PROJECT - UPDATE------
+server.put('/api/projects/:id', (req, res) => {
+    const { name, description, completed } = req.body;
+    const updatedProject = { name, description, completed };
+    if (!name || !description) {
+        res.status(404).json({ error: 'Must provide name and description.' });
+        return;
+    }
     const { id } = req.params;
     projects
-        .remove(id)
+        .update(id, updatedProject)
         .then(project => {
-            res.json( project );
+            res.json(project);
         })
-        .catch(error => {
-            res.json({ error });
-        });
-    // res.json('testing get');
+        .catch(err =>
+            res.json({ error })
+        );
+});
+
+//-----PROJECT - DELETE------
+server.delete('/api/projects/:id', (req, res) => {
+const { id } = req.params;
+projects
+    .remove(id)
+    .then(project => {
+        res.json( project );
+    })
+    .catch(error => {
+        res.json({ error });
+    });
+// res.json('testing get');
 });
 
 
